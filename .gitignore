@@ -1,0 +1,14 @@
+# Dependencias (¡NUNCA subir esto!)
+node_modules/
+
+# Variables de entorno y contraseñas (¡Vital para la seguridad!)
+.env
+
+# Logs de errores de NPM
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos basura del sistema operativo
+.DS_Store
+Thumbs.db
