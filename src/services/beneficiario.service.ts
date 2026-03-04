@@ -40,15 +40,34 @@ export const create = async (data: Beneficiario): Promise<Beneficiario> => {
 export const update = async (
   id: number,
   data: Partial<Beneficiario>,
-): Promise<Beneficiario> => {
-  const { nombre, apellido, dni, fecha_nacimiento, rama_actual } = data;
-  const { rows } = await pool.query(
-    `UPDATE beneficiarios 
-     SET nombre = $1, apellido = $2, dni = $3, fecha_nacimiento = $4, rama_actual = $5 
-     WHERE id_beneficiario = $6 RETURNING *`,
-    [nombre, apellido, dni, fecha_nacimiento, rama_actual, id],
-  );
-  return rows[0];
+): Promise<Beneficiario | null> => {
+  const { nombre, apellido, dni, fecha_nacimiento, rama_actual, id_familia } =
+    data; // 👈 Asegurate de recibir id_familia
+
+  const query = `
+    UPDATE beneficiarios 
+    SET 
+      nombre = $1, 
+      apellido = $2, 
+      dni = $3, 
+      fecha_nacimiento = $4, 
+      rama_actual = $5,
+      id_familia = $6 
+    WHERE id_beneficiario = $7 
+    RETURNING *`;
+
+  const values = [
+    nombre,
+    apellido,
+    dni,
+    fecha_nacimiento,
+    rama_actual,
+    id_familia,
+    id,
+  ];
+
+  const { rows } = await pool.query(query, values);
+  return rows.length ? rows[0] : null;
 };
 
 export const remove = async (id: number): Promise<void> => {
