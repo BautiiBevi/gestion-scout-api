@@ -36,10 +36,13 @@ export const postBeneficiario = async (req: Request, res: Response) => {
 
 export const putBeneficiario = async (req: Request, res: Response) => {
   try {
+    console.log("Datos recibidos para actualizar:", req.body);
+
     const editado = await beneficiarioService.update(
       Number(req.params.id),
       req.body,
     );
+    if (!editado) return res.status(404).json({ message: "No encontrado" });
     res.json(editado);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
