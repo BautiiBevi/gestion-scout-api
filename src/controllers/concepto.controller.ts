@@ -51,3 +51,24 @@ export const asignar = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getDisponibles = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.idBeneficiario);
+    const conceptos =
+      await conceptoService.getConceptosDisponiblesParaBeneficiario(id);
+    res.json(conceptos);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const createMasivo = async (req: Request, res: Response) => {
+  try {
+    // req.body trae: { meses: [], anio: 2026, monto_base: 5000, alcance: 'GRUPO', fecha_vencimiento: '...' }
+    const conceptos = await conceptoService.crearCuotasMasivas(req.body);
+    res.status(201).json(conceptos);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -60,3 +60,48 @@ export const asignarConceptoABeneficiarios = async (idConcepto: number) => {
 
   return cargosGenerados.length; // Devolvemos a cuántos chicos se les asignó
 };
+
+export const getConceptosDisponiblesParaBeneficiario = async (
+  idBeneficiario: number,
+) => {
+  const query = `
+    SELECT * FROM conceptos_cobro 
+    WHERE (alcance = 'GRUPO' OR UPPER(alcance) = (
+      SELECT UPPER(rama_actual) FROM beneficiarios WHERE id_beneficiario = $1
+    ))
+    AND id_concepto NOT IN (
+      SELECT id_concepto FROM cargos WHERE id_beneficiario = $1
+    )
+    ORDER BY nombre ASC;
+  `;
+  const { rows } = await pool.query(query, [idBeneficiario]);
+  return rows;
+};
+
+export const crearCuotasMasivas = async (data: any) => {
+  const { meses, anio, monto_base, alcance, fecha_vencimiento } = data;
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    const conceptosCreados = [];
+
+    for (const mes of meses) {
+      const nombre = `Cuota ${mes} ${anio}`;
+      const { rows } = await client.query(
+        `INSERT INTO conceptos_cobro (nombre, monto_base, alcance, fecha_vencimiento) 
+         VALUES ($1, $2, $3, $4) RETURNING *`,
+        [nombre, monto_base, alcance, fecha_vencimiento || null],
+      );
+      conceptosCreados.push(rows[0]);
+    }
+
+    await client.query("COMMIT");
+    return conceptosCreados;
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+};
