@@ -5,6 +5,7 @@ import {
   postBeneficiario,
   putBeneficiario,
   deleteBeneficiario,
+  getByFamilia,
 } from "../controllers/beneficiario.controller.js";
 
 import { verificarToken } from "../middlewares/auth.middleware.js";
@@ -13,6 +14,7 @@ const router = Router();
 
 router.get("/", verificarToken, getBeneficiarios);
 router.get("/:id", verificarToken, getBeneficiarioById);
+router.get("/familia/:idFamilia", verificarToken, getByFamilia);
 router.post("/", verificarToken, postBeneficiario);
 router.put("/:id", verificarToken, putBeneficiario);
 router.delete("/:id", verificarToken, deleteBeneficiario);
