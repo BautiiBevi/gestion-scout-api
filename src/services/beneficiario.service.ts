@@ -75,3 +75,26 @@ export const remove = async (id: number): Promise<void> => {
     id,
   ]);
 };
+
+export const getPorFamilia = async (idFamilia: number) => {
+  const query = `
+    SELECT 
+      b.id_beneficiario, 
+      b.nombre, 
+      b.apellido, 
+      b.rama_actual,
+      b.id_familia,
+      -- Sumamos solo lo que está PENDIENTE para este beneficiario
+      (
+        SELECT COALESCE(SUM(monto_final), 0) 
+        FROM cargos 
+        WHERE id_beneficiario = b.id_beneficiario 
+        AND estado = 'PENDIENTE'
+      ) as deuda_total
+    FROM beneficiarios b
+    WHERE b.id_familia = $1
+    ORDER BY b.nombre ASC;
+  `;
+  const { rows } = await pool.query(query, [idFamilia]);
+  return rows;
+};

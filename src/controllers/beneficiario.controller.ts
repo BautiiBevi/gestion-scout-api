@@ -57,3 +57,18 @@ export const deleteBeneficiario = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const getByFamilia = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.idFamilia);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ message: "ID de familia inválido" });
+    }
+
+    const hijos = await beneficiarioService.getPorFamilia(id);
+    res.json(hijos);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
