@@ -25,6 +25,7 @@ export const enviarMailBienvenida = async (
         <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
           <h2 style="color: #2e7d32;">¡Siempre Listo, ${nombre}!</h2>
           <p>Tu cuenta ha sido creada con éxito en el Sistema Scout 108.</p>
+          <p>Ingresa a <a href="https://grupo108.vercel.app/" target="_blank">https://grupo108.vercel.app/</a> utilizando tu correo electrónico y la contraseña provisoria.</p>
           <p>Tu contraseña provisoria es: <b style="background: #f4f4f4; padding: 5px;">${passwordProvisoria}</b></p>
           <hr>
           <p style="font-size: 12px; color: #666;">Por favor, cambiá tu clave al ingresar por primera vez.</p>
