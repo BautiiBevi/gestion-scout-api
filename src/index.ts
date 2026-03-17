@@ -26,5 +26,8 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api/legajos", legajoRoutes);
 
-const PORT = 3000;
-app.listen(PORT, () => console.log(`🚀 API Scout en puerto ${PORT}`));
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 API Scout corriendo en el puerto ${PORT}`);
+});
