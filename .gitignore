@@ -12,3 +12,9 @@ yarn-error.log*
 # Archivos basura del sistema operativo
 .DS_Store
 Thumbs.db
+
+# Ignorar todo el contenido de uploads
+uploads/*
+
+# Pero NO ignorar el archivo .gitkeep
+!uploads/.gitkeep
