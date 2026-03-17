@@ -2,16 +2,12 @@ import pool from "../config/db.js";
 import bcrypt from "bcrypt";
 import { enviarMailBienvenida } from "./mailer.service.js";
 
-// Genera una clave aleatoria de 8 caracteres (ej: "a7b9x2pz")
 const generarPasswordRandom = () => Math.random().toString(36).slice(-8);
 
 export const crearDirigente = async (data: any) => {
   const { nombre, apellido, dni, email, rol } = data;
 
-  // 1. Generamos la provisoria
   const passwordProvisoria = generarPasswordRandom();
-
-  // 2. La encriptamos para guardarla en la BD
   const passwordEncriptada = await bcrypt.hash(passwordProvisoria, 10);
 
   try {
@@ -21,8 +17,19 @@ export const crearDirigente = async (data: any) => {
       [nombre, apellido, dni, email, passwordEncriptada, rol],
     );
 
-    // 3. Si se guardó bien, mandamos el mail CON LA CLAVE SIN ENCRIPTAR para que la lea
-    await enviarMailBienvenida(email, nombre, passwordProvisoria);
+    // 👇 EL SALVAVIDAS: Intentamos mandar el mail, pero si falla, no rompemos todo
+    try {
+      // Le sacamos el "await" para que se mande de fondo (fire-and-forget)
+      // y responda al frontend al instante sin esperar a Gmail.
+      enviarMailBienvenida(email, nombre, passwordProvisoria).catch((err) => {
+        console.error(
+          "⚠️ Usuario creado, pero Gmail rechazó el envío del correo:",
+          err,
+        );
+      });
+    } catch (mailError) {
+      console.error("⚠️ Error al intentar conectar con el servicio de correo");
+    }
 
     return rows[0];
   } catch (error: any) {

@@ -1,12 +1,11 @@
 import nodemailer from "nodemailer";
 
-// Configuramos el "cartero" usando Gmail.
-// OJO: Vas a necesitar crear una "Contraseña de Aplicación" en tu cuenta de Google para que esto funcione.
+// Usamos las variables de entorno que vas a configurar en Render
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "bautistabevilacqua@gmail.com", // Cambiá esto
-    pass: "psrp izrb hgys bich", // No es tu clave normal, es una generada por Google
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -16,7 +15,7 @@ export const enviarMailBienvenida = async (
   passwordProvisoria: string,
 ) => {
   const mailOptions = {
-    from: '"Sistema Scout 108" <tu_correo_del_grupo@gmail.com>',
+    from: '"Sistema Scout 108" <tu_correo_del_grupo@gmail.com>', // Podés poner process.env.EMAIL_USER acá también
     to: emailDestino,
     subject: "¡Bienvenido al Sistema de Gestión Scout!",
     html: `
