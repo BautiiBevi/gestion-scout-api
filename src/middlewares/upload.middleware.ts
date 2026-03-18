@@ -10,14 +10,13 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  // Pasamos params como una función para que TypeScript no moleste con los tipos estrictos
   params: async (req, file) => {
     return {
       folder: "sistema-scout-legajos",
       allowed_formats: ["jpg", "png", "pdf", "jpeg"],
-      // Cloudinary formatea automáticamente según la extensión original
+      // ESTA LÍNEA ES LA QUE TE ARREGLA EL PROBLEMA DEL CELULAR:
+      resource_type: "auto",
     };
   },
 });
-
 export const upload = multer({ storage: storage });
