@@ -22,7 +22,7 @@ app.use("/api/conceptos", conceptosRoutes);
 app.use("/api/cargos", cargosRoutes);
 app.use("/api/caja", cajaRoutes);
 
-app.use("/uploads", express.static("uploads"));
+app.use("api/uploads", express.static("uploads"));
 
 app.use("/api/legajos", legajoRoutes);
 
