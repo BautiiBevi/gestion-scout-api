@@ -9,6 +9,8 @@ import cargosRoutes from "./routes/cargo.routes.js";
 import cajaRoutes from "./routes/caja.routes.js";
 import legajoRoutes from "./routes/legajo.routes.js";
 import eventoRoutes from "./routes/evento.routes.js";
+import cron from "node-cron";
+import { sincronizarPreciosAutomaticamente } from "./services/concepto.service.js";
 
 const app = express();
 app.use(cors());
@@ -27,6 +29,12 @@ app.use("/api/eventos", eventoRoutes);
 app.use("api/uploads", express.static("uploads"));
 
 app.use("/api/legajos", legajoRoutes);
+
+cron.schedule("5 0 * * *", async () => {
+  console.log("⏰ [CRON] Ejecutando sincronización de precios nocturna...");
+  await sincronizarPreciosAutomaticamente();
+  console.log("✅ [CRON] Sincronización completada.");
+});
 
 const PORT = process.env.PORT || 3000;
 
