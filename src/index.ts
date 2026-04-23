@@ -30,10 +30,10 @@ app.use("api/uploads", express.static("uploads"));
 
 app.use("/api/legajos", legajoRoutes);
 
-cron.schedule("* * * * *", async () => {
-  console.log("⏰ [TEST] El cron se despertó. Revisando precios...");
+cron.schedule("5 0 * * *", async () => {
+  console.log("⏰ [CRON] Ejecutando sincronización de precios nocturna...");
   await sincronizarPreciosAutomaticamente();
-  console.log("✅ [TEST] Revisión terminada.");
+  console.log("✅ [CRON] Sincronización completada.");
 });
 
 const PORT = process.env.PORT || 3000;
